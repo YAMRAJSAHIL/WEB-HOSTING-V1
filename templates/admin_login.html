@@ -1,0 +1,17 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="admin-login-container neon-card">
+    <h2 class="neon-text">Admin Login</h2>
+    <form method="POST" action="{{ url_for('admin') }}" class="admin-login-form">
+        <div class="form-group">
+            <input type="text" name="username" placeholder="Username" required class="neon-input">
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" placeholder="Password" required class="neon-input">
+        </div>
+        <button type="submit" class="btn neon-btn">Login</button>
+    </form>
+</div>
+{% endblock %}

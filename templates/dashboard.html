@@ -1,0 +1,102 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="page-header">
+        <h1 class="welcome-title">Welcome, <a href="https://t.me/YAMRAJSAHIL2" target="_blank" class="username-link neon-link">{{ username }}</a>!</h1>
+    </div>
+
+    <div class="dashboard-sections">
+        <div class="upload-section neon-card">
+            <div class="section-header">
+                <h2>Upload Your Script</h2>
+            </div>
+            <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="upload-form">
+                <div class="file-input-wrapper">
+                    <input type="file" name="file" accept=".py" required>
+                    <div class="file-input-text">Choose a Python file or drag it here</div>
+                </div>
+                <button type="submit" class="btn btn-upload">Upload Script</button>
+            </form>
+        </div>
+
+        <div class="files-section neon-card">
+            <div class="section-header">
+                <h2 class="neon-text">Your Scripts</h2>
+            </div>
+            {% if files %}
+                <ul class="file-list">
+                    {% for file in files %}
+                    <li class="script-item">
+                        <span class="file-name">{{ file }}</span>
+                        <div class="file-actions">
+                            {% if file in running_files %}
+                                <a href="{{ url_for('stop_file', process_id=running_files[file]) }}" class="btn btn-stop neon-btn-red">STOP</a>
+                            {% else %}
+                                <a href="{{ url_for('start_file', filename=file) }}" class="btn btn-start neon-btn-green">START</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-files">No files uploaded yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="processes-section neon-card">
+            <div class="section-header">
+                <h2 class="neon-text">Running Processes</h2>
+            </div>
+            {% if processes %}
+                <div class="process-list">
+                    {% for process_id, process in processes.items() %}
+                        <div class="process-item">
+                            <span class="process-name">{{ process.filename }}</span>
+                            <span class="process-status status-{{ process.status }}">{{ process.status }}</span>
+                            <div class="process-actions">
+                                <a href="{{ url_for('restart_file', process_id=process_id) }}" class="btn btn-restart">RESTART</a>
+                                <a href="{{ url_for('view_logs', process_id=process_id) }}" class="btn btn-logs">LOGS</a>
+                                <a href="{{ url_for('stop_file', process_id=process_id) }}" class="btn btn-stop">STOP</a>
+                                <a href="{{ url_for('delete_file', filename=process.filename) }}" class="btn btn-delete">DELETE</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-processes">No running processes.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if announcements %}
+    <div class="announcements-section neon-card">
+        <div class="section-header">
+            <h2 class="neon-text">Announcements</h2>
+        </div>
+        <div class="announcement-list">
+            {% for announcement in announcements %}
+            <div class="announcement-item">
+                <p class="announcement-author">By Admin</p>
+                <p class="announcement-message">{{ announcement.message }}</p>
+                <div class="announcement-meta">
+                    <div class="time-date-wrapper">
+                        <span class="announcement-time neon-blue">{{ announcement.timestamp }}</span>
+                        <span class="announcement-date neon-green">{{ announcement.date }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="neon-title">
+        <h2>Powered by <a href="https://t.me/YAMRAJSAHIL2" target="_blank" class="neon-link">@YAMRAJSAHIL2</a></h2>
+        <h2>Web Design by <a href="https://t.me/YAMRAJSAHIL2" target="_blank" class="neon-link">@YAMRAJSAHIL2</a></h2>
+    </div>
+</div>
+{% endblock %}
