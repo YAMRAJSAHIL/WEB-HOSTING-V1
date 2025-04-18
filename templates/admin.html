@@ -1,1 +1,82 @@
+{% extends "layout.html" %}
 
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1 class="admin-title">Admin Panel</h1>
+
+    <div class="admin-stats">
+        <div class="stat-card">
+            <h3>Total Users</h3>
+            <p>{{ users|length }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Files</h3>
+            <p>{{ total_files }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Running Scripts</h3>
+            <p>{{ processes|length }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Broadcasts</h3>
+            <p>{{ announcements|length }}</p>
+        </div>
+    </div>
+
+    <section class="admin-section">
+        <h2>Announcements</h2>
+        <div class="announcement-list">
+            {% for announcement in announcements %}
+            <div class="announcement-item">
+                <p>{{ announcement.message }}</p>
+                <p class="announcement-meta">By {{ announcement.author }} | Time: {{ announcement.timestamp }} | Date: {{ announcement.date }}</p>
+                <form action="{{ url_for('delete_announcement', index=loop.index0) }}" method="post" style="display: inline;">
+                    <button type="submit" class="btn-delete">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <h2>User Credentials</h2>
+        <div class="user-list">
+            {% for username, user in users.items() %}
+            <div class="user-item">
+                <p><strong>Username:</strong> {{ username }}</p>
+                <p><strong>Password:</strong> {{ user.password }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <h2>User Files</h2>
+        <div class="user-files">
+            {% for username, files in user_files.items() %}
+            <div class="user-file-group">
+                <h3>{{ username }}</h3>
+                <div class="file-list">
+                    {% for file in files %}
+                    <div class="file-item">
+                        <span>{{ file.name }}</span>
+                        <a href="{{ url_for('download_file', username=username, filename=file.name) }}" class="download-btn">Download</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <h2>Broadcast Message</h2>
+        <form method="POST" action="{{ url_for('make_announcement') }}">
+            <textarea name="message" placeholder="Broadcast message to all users" required></textarea>
+            <button type="submit" class="btn">Send Broadcast</button>
+        </form>
+    </section>
+</div>
+{% endblock %}
